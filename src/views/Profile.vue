@@ -25,18 +25,37 @@
 <script>
 import SideNavi from '../components/SideNavi.vue';
 import Message from '../components/Message.vue';
+import axios from 'axios';
 
 export default {
   data() {
     return {
-      name: '太郎',
+      name: this.$store.state.user.name,
       active: true,
-      profile: 'わたしは太郎です'
+      profile: this.$store.state.user.profile
     };
   },
   components: {
     SideNavi,
     Message
+  },
+  methods: {
+    edit() {
+      if (!this.active) {
+        axios
+        .put('herokuのurl/api/user', {
+          email: this.$store.state.tser.email,
+          profile: this.profile
+        })
+        .then((response) => {
+          this.$store.dispatch('changeUserData', {
+            profile: this.profile
+          });
+          console.log(response);
+        });
+      }
+      this.active = !this.active;
+    }
   }
 };
 </script>

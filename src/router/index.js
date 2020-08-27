@@ -4,12 +4,16 @@ import Login from '../views/Login.vue';
 import SignUp from '../views/SignUp.vue';
 import Profile from '../views/Profile.vue';
 import Detail from '../views/Detail.vue';
+import store from '../store/index';
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/',
@@ -24,12 +28,18 @@ const routes = [
   {
     path: '/profile',
     name: 'profile',
-    component: Profile
+    component: Profile,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/detail/:id',
     name: 'detali',
     component: Detail,
+    meta: {
+      requiresAuth: true
+    },
     props: true
   }
 ]
@@ -37,6 +47,19 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.requiresAuth) && !store.state.auth) {
+    next({
+      pagh: '/',
+      query: {
+        redirect: to.fullPath
+      }
+    });
+  } else {
+    next();
+  }
+});
 
 export default router;

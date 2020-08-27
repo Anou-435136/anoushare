@@ -16,12 +16,31 @@
 
 <script>
 import HeaderAuth from '../components/HeaderAuth.vue';
+import axios from 'axios';
 
 export default {
   components: {
     HeaderAuth
+  },
+  methods: {
+    auth() {
+      axios
+      .post('herokuのurl/api/register', {
+        name: this.name,
+        profile: this.profile,
+        email: this.email,
+        password: this.password
+      })
+      .then(response => {
+        console.log(response);
+        this.$router.replace('/');
+      })
+      .catch(error => {
+        alert(error);
+      });
+    }
   }
-}
+};  
 </script>
 
 <style scoped>

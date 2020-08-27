@@ -32,18 +32,48 @@
 <script>
 import SideNavi from '../components/SideNavi.vue';
 import Message from '../components/Message.vue';
+import axios from 'axios';
 
 export default {
+  props: ['id'],
   data() {
     return {
-      data: [{ name: '太郎', like: [], share: '初めまして' }],
-      content: ''
+      data: '',
+      content: '',
     };
   },
   components: {
     SideNavi,
     Message
-  }
+  },
+  methods: {
+    send() {
+      axios
+      .post('herokuのurl/api/comment', {
+        share_id: this.id,
+        user_id: this.$store.state.user_id,
+        content: this.content
+      }) 
+      .then((response) => {
+        console.log(response);
+        this.content = '';
+        this.$router.go({
+          path: this.$router.currentRoute.path,
+          force: true
+        });
+      });
+    },
+    comment() {
+      axios
+      .get('herokuのurl/api.shares/' + this.id)
+      .then((response) => {
+        this.data = response.data.comment;
+      });
+    }
+  },
+  created() {
+    this.comment();
+  },
 };
 </script>
 
